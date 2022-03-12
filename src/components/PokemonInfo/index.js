@@ -394,14 +394,20 @@ function PokemonInfo() {
                               <div className="stats-type">Generation</div>
                               <div className="about-info">
                                 <span>
-                                  {info.generation.name.replace("-", " ")}
+                                  {info.generation === null
+                                    ? "Not available"
+                                    : info.generation.name.replace("-", " ")}
                                 </span>
                               </div>
                             </li>
                             <li key={`${index}+ shape`}>
                               <div className="stats-type">Shape</div>
                               <div className="about-info">
-                                <span>{info.shape.name}</span>
+                                <span>
+                                  {info.shape === null
+                                    ? "Not available"
+                                    : info.shape.name}
+                                </span>
                               </div>
                             </li>
                             <li key={`${index}+ Capture`}>
@@ -425,7 +431,11 @@ function PokemonInfo() {
                       <li>
                         <div className="about-info" style={{ width: "100%" }}>
                           {moves.map((move, index) => {
-                            return <span className="moves" key={index}>{move.move.name},</span>;
+                            return (
+                              <span className="moves" key={index}>
+                                {move.move.name},
+                              </span>
+                            );
                           })}
                         </div>
                       </li>
