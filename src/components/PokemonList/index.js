@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { getAllPokemonsNamesService, getPokemonService, getAllPokemonsService, getSearchedPokemonService } from "../../services";
 
 // Estilos
 import { Wrapper, Content } from "./PokemonList.style";
@@ -11,91 +12,85 @@ import LoadMoreButton from "../LoadMoreButton";
 import Header from "../Header";
 import BackToTopButton from "../BackToTopButton";
 
-function PokemonList() {
 
+function PokemonList() {
   const [allPokemons, setAllPokemons] = useState([]);
   const [allPokemonsNames, setAllPokemonsNames] = useState([]);
   const [filteredPokemonsList, setFilteredPokemonsList] = useState();
   const [loadMore, setLoadMore] = useState(
-    "https://pokeapi.co/api/v2/pokemon?limit=20"
+    "/pokemon?limit=20"
   );
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingCard, setIsLoadingCard] = useState(true);
   const [checkIfIsMain, setCheckIfIsMain] = useState(true);
 
-  const pokemomsNamesArray = [];
-
-  async function getAllPokemonsName() {
-    try {
-      const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=900");
-      const data = await res.json();
-      data.results.map((pokemon, index) => {
-        return (pokemomsNamesArray[index] = pokemon.name);
-        //setAllPokemonsNames(pokemon.name);
-      });
-      setAllPokemonsNames(pokemomsNamesArray);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function getAllPokemons() {
-    setIsLoading(true);
-    try {
-      const res = await fetch(loadMore);
-      const data = await res.json();
-
-      setLoadMore(data.next);
-
-      function createPokemonObject(results) {
-        results.forEach(async (pokemon) => {
-          const res = await fetch(
-            `https://pokeapi.co/api/v2/pokemon/${pokemon.name}`
-          );
-          const data = await res.json();
-          setAllPokemons((currentList) => {
-            return [...currentList, data];
-          });
-          setIsLoading(false);
+  function createPokemonObject(results) {
+    results.forEach((pokemon) => {
+      getPokemonService(pokemon?.name).then((response) => {
+        setAllPokemons((currentList) => {
+          return [...currentList, response.data];
         });
-      }
-      createPokemonObject(data.results);
-    } catch (error) {
-      console.log(error);
-    }
+        setIsLoading(false);
+      });
+    });
   }
+  
+  function getAllPokemons() {
+    setIsLoading(true);
+    getAllPokemonsService(loadMore)
+      .then((response) => {
+        setLoadMore(response?.data?.next);
+        createPokemonObject(response?.data?.results);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  
 
   useEffect(() => {
-    getAllPokemonsName();
+    const pokemomsNamesArray = [];
+    getAllPokemonsNamesService()
+      .then((response) => {
+        response?.data?.results.forEach((pokemon) => {
+          pokemomsNamesArray.push(pokemon.name);
+        });
+        setAllPokemonsNames(pokemomsNamesArray);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   useEffect(() => {
     getAllPokemons();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   useEffect(() => {
     filteredPokemonsList ? setCheckIfIsMain(true) : setCheckIfIsMain(false);
   }, [filteredPokemonsList]);
 
-  async function onSearchSubmit(e) {
+
+  function onSearchSubmit (e) {
     setIsLoadingCard(true);
-    try {
-      const pokemonNameOrId = e.toLowerCase();
-      if (pokemonNameOrId === "") {
-        setAllPokemons(allPokemons);
-        setFilteredPokemonsList();
-        setIsLoadingCard(false);
-      } else {
-        const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${pokemonNameOrId}`
-        ).then((res) => {
-          return res.json();
+    const pokemonNameOrId = e.toLowerCase();
+    if (pokemonNameOrId === "") {
+      setAllPokemons(allPokemons);
+      setFilteredPokemonsList();
+      setIsLoadingCard(false);
+    } else {
+      getSearchedPokemonService(pokemonNameOrId)
+        .then((response) => {
+          setFilteredPokemonsList([response.data]);
+        })
+        .catch((error) => {
+          alert(
+            "The name or id of the pokemon you searched for does not exist, please enter a valid name or id"
+          );
+        }).finally(() => {
+          setIsLoadingCard(false);
         });
-        setFilteredPokemonsList([response]);
-        setIsLoadingCard(false);
-      }
-    } catch (error) {
-      alert("The name or id of the pokemon you searched for does not exist, please enter a valid name or id");
     }
   }
 

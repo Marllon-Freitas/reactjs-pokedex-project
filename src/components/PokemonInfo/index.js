@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { getPokemonService, getPokemonSpeciesService } from "../../services";
 
 // Estilos
 import { Wrapper, Content } from "./PokemonInfo.style";
@@ -15,16 +16,12 @@ function PokemonInfo() {
   const [pokemonInfoSpecies, setPokemonInfoSpecies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { pokemonName } = useParams();
-  const [showSearchBar, setShowSearchBar] = useState(false);
 
   const [pokemonBaseStats, setPokemonBaseStats] = useState([]);
   const [pokemonAbilities, setPokemonAbilities] = useState([]);
   const [eggGroups, setEggGroups] = useState([]);
   const [moves, setMoves] = useState([]);
   const [texts, setTexts] = useState("");
-
-  const pokeURL = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
-  const pokeSpeciesURL = `https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`;
 
   const cancelAction = () => {
     navigate("/");
@@ -34,48 +31,41 @@ function PokemonInfo() {
     setToggleState(index);
   };
 
-  const getPokemonInfoSpecies = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch(pokeSpeciesURL);
-      const data = await res.json();
-      setPokemonInfoSpecies([data]);
-      data.flavor_text_entries.some((flavor) => {
-        if (flavor.language.name === "en") {
-          setTexts(flavor.flavor_text);
-        }
+  useEffect(() => {
+    getPokemonSpeciesService(pokemonName)
+      .then((res) => {
+        setPokemonInfoSpecies([res?.data]);
+        res?.data?.flavor_text_entries.some((flavor) => {
+          if (flavor?.language?.name === "en") {
+            setTexts(flavor?.flavor_text);
+          }
+          return null;
+        });
+        setEggGroups(res.data.egg_groups);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-      setEggGroups(data.egg_groups);
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [pokeURL]);
+  }, [pokemonName]);
 
   useEffect(() => {
-    getPokemonInfoSpecies();
-  }, []);
-
-  const getPokemonInfo = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch(pokeURL);
-      const data = await res.json();
-      setPokemonInfo([data]);
-      setPokemonBaseStats(data.stats);
-      setMoves(data.moves);
-      setPokemonAbilities(data.abilities);
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [pokeURL]);
-
-  useEffect(() => {
-    getPokemonInfo();
-  }, []);
-
-  useEffect(() => {}, [pokemonInfoSpecies]);
+    getPokemonService(pokemonName)
+      .then((res) => {
+        setPokemonInfo([res.data]);
+        setPokemonBaseStats(res.data.stats);
+        setMoves(res.data.moves);
+        setPokemonAbilities(res.data.abilities);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [pokemonName]);
 
   function formatId(id) {
     if (id > 99) {
@@ -107,6 +97,7 @@ function PokemonInfo() {
     } else if (info.capture_rate > 0 && info.capture_rate < 51) {
       captureRate = "Very hard";
     }
+    return null;
   });
 
   return (
@@ -119,17 +110,19 @@ function PokemonInfo() {
         <Header
           showBackButton={true}
           backToMain={cancelAction}
-          setShowSearchBar={showSearchBar}
+          setShowSearchBar={false}
         />
         {isLoading ? (
-          <Loader />
+          <div className="loader-wrapper">
+            <Loader />
+          </div>
         ) : (
           <div className="pokemonInfo-wrapper">
             <header className="pokemonInfo-header">
-              {pokemonInfo.map((info) => {
+              {pokemonInfo.map((info, index) => {
                 return (
                   <>
-                    <div className="content">
+                    <div className="content" key={index}>
                       <div className="pokemonInfo-header-head">
                         <h3 className="pokemonInfo-header-name">
                           {info.name.charAt(0).toUpperCase() +

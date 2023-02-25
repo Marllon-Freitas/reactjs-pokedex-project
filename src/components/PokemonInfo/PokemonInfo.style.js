@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   width: 100%;
-  height: 100vh;
   &:hover .pokemonCard-content img {
     transform: scale(1.2);
   }
@@ -79,6 +78,18 @@ export const Wrapper = styled.div`
 export const Content = styled.div`
   width: 100%;
   height: 100%;
+
+  .loader-wrapper {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: -50%;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: -10;
+  }
 
   .pokemonInfo-wrapper {
     width: 100%;
