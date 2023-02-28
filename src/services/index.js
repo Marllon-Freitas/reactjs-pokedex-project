@@ -12,18 +12,13 @@ const getPokemonSpeciesService = (pokemonName) => {
   return http.get(`/pokemon-species/${pokemonName}`);
 };
 
-const getAllPokemonsService = (limit) => {
-  return http.get(limit);
-};
-
-const getSearchedPokemonService = (pokemonName) => {
-  return http.get(`/pokemon/${pokemonName}`);
+const getAllPokemonsService = (url) => {
+  return http.get(url);
 };
 
 export {
   getAllPokemonsNamesService,
   getPokemonService,
   getAllPokemonsService,
-  getSearchedPokemonService,
   getPokemonSpeciesService,
 };

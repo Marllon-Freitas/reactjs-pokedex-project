@@ -76,7 +76,9 @@ function SearchBar({ onSubmit, pokemonNameSuggestion }) {
                 >
                   <IconSearchButton>
                     <svg
-                      onClick={onSearchSubmit}
+                      onClick={() => {
+                        handleAutocompleteClick(name);
+                      }}
                       className="gUZ B9u U9O kVc"
                       height="16"
                       width="16"

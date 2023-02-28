@@ -1,19 +1,11 @@
 import React from "react";
 import LoaderCard from "../LoaderCard";
+import { formatId } from "../../utils/formatId";
 
 // Estilos
 import { Wrapper, Content } from "./PokemonCard.style";
 
 function PokemonCard({ id, image, name, types, type, loadingCardPokemon }) {
-  function formatId(id) {
-    if (id > 99) {
-      return `#${id}`;
-    } else if (id > 9) {
-      return `#0${id}`;
-    } else {
-      return `#00${id}`;
-    }
-  }
 
   return (
     <Wrapper>

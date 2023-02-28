@@ -20,7 +20,7 @@ export const GlobalStyle = createGlobalStyle`
 
     --grass: #48d0b0;
 
-    --electric: #ffd86f;
+    --electric: #f7c849;
 
     --water-ice: #76bdfe;
 

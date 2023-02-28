@@ -8,6 +8,9 @@ import { Wrapper, Content } from "./PokemonInfo.style";
 import Loader from "../Loader";
 import Header from "../Header";
 
+import { formatId } from "../../utils/formatId";
+import { calculateCaptureRate } from "../../utils/formatCaptureRate";
+
 function PokemonInfo() {
   const navigate = useNavigate();
 
@@ -67,38 +70,11 @@ function PokemonInfo() {
       });
   }, [pokemonName]);
 
-  function formatId(id) {
-    if (id > 99) {
-      return `#${id}`;
-    } else if (id > 9) {
-      return `#0${id}`;
-    } else {
-      return `#00${id}`;
-    }
-  }
-
   const femaleRate = pokemonInfoSpecies.map((stats) => {
     return stats.gender_rate;
   });
   const genderRatioFemale = 12.5 * femaleRate;
   const genderRatioMale = 12.5 * (8 - femaleRate);
-
-  let captureRate;
-
-  pokemonInfoSpecies.map((info) => {
-    if (info.capture_rate > 204) {
-      captureRate = "Very easy";
-    } else if (info.capture_rate > 153 && info.capture_rate < 204) {
-      captureRate = "Easy";
-    } else if (info.capture_rate > 102 && info.capture_rate < 153) {
-      captureRate = "Medium";
-    } else if (info.capture_rate > 51 && info.capture_rate < 102) {
-      captureRate = "Hard";
-    } else if (info.capture_rate > 0 && info.capture_rate < 51) {
-      captureRate = "Very hard";
-    }
-    return null;
-  });
 
   return (
     <Wrapper
@@ -406,7 +382,9 @@ function PokemonInfo() {
                             <li key={`${index}+ Capture`}>
                               <div className="stats-type">Capture</div>
                               <div className="about-info">
-                                <span>{captureRate}</span>
+                                <span>
+                                  {calculateCaptureRate(info?.capture_rate)}
+                                </span>
                               </div>
                             </li>
                           </>

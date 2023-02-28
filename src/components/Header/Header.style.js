@@ -16,8 +16,8 @@ export const Content = styled.div`
   align-items: center;
   position: relative;
 
-  .teste {
-    width: 8rem;
+  .logo {
+    width: 10rem;
     padding: 0.3rem 0 0 0;
     height: 5em;
     cursor: pointer;

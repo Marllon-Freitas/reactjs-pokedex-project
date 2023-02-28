@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getAllPokemonsNamesService, getPokemonService, getAllPokemonsService, getSearchedPokemonService } from "../../services";
+import { getAllPokemonsNamesService, getPokemonService, getAllPokemonsService } from "../../services";
 
 // Estilos
 import { Wrapper, Content } from "./PokemonList.style";
@@ -11,15 +11,13 @@ import Loader from "../Loader";
 import LoadMoreButton from "../LoadMoreButton";
 import Header from "../Header";
 import BackToTopButton from "../BackToTopButton";
-
+import { baseUrl } from "../../http";
 
 function PokemonList() {
   const [allPokemons, setAllPokemons] = useState([]);
   const [allPokemonsNames, setAllPokemonsNames] = useState([]);
   const [filteredPokemonsList, setFilteredPokemonsList] = useState();
-  const [loadMore, setLoadMore] = useState(
-    "/pokemon?limit=20"
-  );
+  const [loadMore, setLoadMore] = useState(`${baseUrl}/pokemon?limit=20`);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingCard, setIsLoadingCard] = useState(true);
   const [checkIfIsMain, setCheckIfIsMain] = useState(true);
@@ -47,7 +45,6 @@ function PokemonList() {
       });
   }
   
-
   useEffect(() => {
     const pokemomsNamesArray = [];
     getAllPokemonsNamesService()
@@ -64,7 +61,7 @@ function PokemonList() {
 
   useEffect(() => {
     getAllPokemons();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -78,9 +75,8 @@ function PokemonList() {
     if (pokemonNameOrId === "") {
       setAllPokemons(allPokemons);
       setFilteredPokemonsList();
-      setIsLoadingCard(false);
     } else {
-      getSearchedPokemonService(pokemonNameOrId)
+      getPokemonService(pokemonNameOrId)
         .then((response) => {
           setFilteredPokemonsList([response.data]);
         })
@@ -113,7 +109,6 @@ function PokemonList() {
         {filteredPokemonsList ? (
           <Content>
             {filteredPokemonsList
-              .sort((a, b) => (a.id > b.id ? 1 : -1))
               .map((pokemonStats, index) => (
                 <Link key={index} to={`pokemon/${pokemonStats.name}`}>
                   <PokemonCard
