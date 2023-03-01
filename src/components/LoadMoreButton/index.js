@@ -1,7 +1,7 @@
 import React from "react";
 
 // Estilos
-import { Wrapper } from "./LoadMoreButton.style";
+import { Wrapper } from "./styled";
 
 function LoadMoreButton({ callback }) {
   return (

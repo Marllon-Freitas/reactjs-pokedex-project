@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 
 // Componentes
 // import Header from "./components/Header";
-import Routers from "./Routers";
+import Routers from "./routers";
 
 // Estilo global
 import { GlobalStyle } from "./style/GlobalStyle";

@@ -1,7 +1,7 @@
 import http from "../http";
 
 const getAllPokemonsNamesService = () => {
-  return http.get("/pokemon?limit=900");
+  return http.get("/pokemon?limit=1000");
 };
 
 const getPokemonService = (pokemonName) => {

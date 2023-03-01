@@ -1,7 +1,7 @@
 import React from 'react'
 
 // Estilos
-import { Wrapper, Content } from "./Loader.style";
+import { Wrapper, Content } from "./styled";
 
 function Loader() {
   return (

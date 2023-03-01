@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 // Estilos
-import { Wrapper } from "./NotFound.style";
+import { Wrapper } from "./styled";
 
 function NotFound() {
   return (

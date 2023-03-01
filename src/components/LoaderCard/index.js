@@ -1,7 +1,7 @@
 import React from "react";
 
 // Estilos
-import { Wrapper, Content } from "./LoaderCard.style";
+import { Wrapper, Content } from "./styled";
 
 function LoaderCard() {
   return (

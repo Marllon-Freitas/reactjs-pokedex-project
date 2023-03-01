@@ -1,8 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 // Estilos
-import { Wrapper, Content } from "./Header.style";
+import { Wrapper, Content } from "./styled";
 
 // Componentes
 import SearchBar from "../SearchBar";

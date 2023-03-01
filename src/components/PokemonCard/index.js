@@ -3,13 +3,12 @@ import LoaderCard from "../LoaderCard";
 import { formatId } from "../../utils/formatId";
 
 // Estilos
-import { Wrapper, Content } from "./PokemonCard.style";
+import { Wrapper, Content } from "./styled";
 
-function PokemonCard({ id, image, name, types, type, loadingCardPokemon }) {
-
+function PokemonCard({ id, image, name, types, loadingCardPokemon }) {
   return (
     <Wrapper>
-      <Content className={type}>
+      <Content className={types[0]?.type?.name}>
         {loadingCardPokemon ? (
           <LoaderCard />
         ) : (

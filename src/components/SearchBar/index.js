@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 // Estilos
-import { Wrapper, SearchBarContent, IconSearchButton } from "./SearchBar.style";
+import { Wrapper, SearchBarContent, IconSearchButton } from "./styled";
 
 function SearchBar({ onSubmit, pokemonNameSuggestion }) {
   const [searchInput, setSearchInput] = useState("");
@@ -63,7 +63,7 @@ function SearchBar({ onSubmit, pokemonNameSuggestion }) {
           </button>
         </form>
       </SearchBarContent>
-      {filterSearch !== 0 && (
+      {filterSearch.length > 0 && (
         <div className="pokemonNameSuggestion">
           {filterSearch.map((name) => {
             return (

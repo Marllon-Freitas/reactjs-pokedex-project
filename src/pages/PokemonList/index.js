@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getAllPokemonsNamesService, getPokemonService, getAllPokemonsService } from "../../services";
+import {
+  getAllPokemonsNamesService,
+  getPokemonService,
+  getAllPokemonsService,
+} from "../../services";
 
 // Estilos
-import { Wrapper, Content } from "./PokemonList.style";
+import { Wrapper, Content } from "./styled";
 
 // Componentes
-import PokemonCard from "../PokemonCard";
-import Loader from "../Loader";
-import LoadMoreButton from "../LoadMoreButton";
-import Header from "../Header";
-import BackToTopButton from "../BackToTopButton";
+import PokemonCard from "../../components/PokemonCard";
+import Loader from "../../components/Loader";
+import LoadMoreButton from "../../components/LoadMoreButton";
+import Header from "../../components/Header";
+import BackToTopButton from "../../components/BackToTopButton";
 import { baseUrl } from "../../http";
 
 function PokemonList() {
   const [allPokemons, setAllPokemons] = useState([]);
   const [allPokemonsNames, setAllPokemonsNames] = useState([]);
-  const [filteredPokemonsList, setFilteredPokemonsList] = useState();
+  const [filteredPokemonsList, setFilteredPokemonsList] = useState([]);
   const [loadMore, setLoadMore] = useState(`${baseUrl}/pokemon?limit=20`);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingCard, setIsLoadingCard] = useState(true);
@@ -32,7 +36,7 @@ function PokemonList() {
       });
     });
   }
-  
+
   function getAllPokemons() {
     setIsLoading(true);
     getAllPokemonsService(loadMore)
@@ -44,7 +48,7 @@ function PokemonList() {
         console.log(error);
       });
   }
-  
+
   useEffect(() => {
     const pokemomsNamesArray = [];
     getAllPokemonsNamesService()
@@ -61,30 +65,30 @@ function PokemonList() {
 
   useEffect(() => {
     getAllPokemons();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    filteredPokemonsList ? setCheckIfIsMain(true) : setCheckIfIsMain(false);
+    filteredPokemonsList.length > 0 ? setCheckIfIsMain(true) : setCheckIfIsMain(false);
   }, [filteredPokemonsList]);
 
-
-  function onSearchSubmit (e) {
+  function onSearchSubmit(e) {
     setIsLoadingCard(true);
     const pokemonNameOrId = e.toLowerCase();
     if (pokemonNameOrId === "") {
       setAllPokemons(allPokemons);
-      setFilteredPokemonsList();
+      setFilteredPokemonsList([]);
     } else {
       getPokemonService(pokemonNameOrId)
         .then((response) => {
-          setFilteredPokemonsList([response.data]);
+          setFilteredPokemonsList([response?.data]);
         })
-        .catch((error) => {
+        .catch(() => {
           alert(
             "The name or id of the pokemon you searched for does not exist, please enter a valid name or id"
           );
-        }).finally(() => {
+        })
+        .finally(() => {
           setIsLoadingCard(false);
         });
     }
@@ -106,45 +110,41 @@ function PokemonList() {
           pokemonNameSuggestion={allPokemonsNames}
         />
         <BackToTopButton />
-        {filteredPokemonsList ? (
+        {filteredPokemonsList.length > 0 ? (
           <Content>
-            {filteredPokemonsList
-              .map((pokemonStats, index) => (
-                <Link key={index} to={`pokemon/${pokemonStats.name}`}>
-                  <PokemonCard
-                    key={index}
-                    id={pokemonStats.id}
-                    image={
-                      pokemonStats.sprites.other["official-artwork"]
-                        .front_default
-                    }
-                    name={pokemonStats.name}
-                    types={pokemonStats.types}
-                    type={pokemonStats.types[0].type.name}
-                    loadingCardPokemon={isLoadingCard}
-                  />
-                </Link>
-              ))}
+            <Link to={`pokemon/${filteredPokemonsList[0]?.name}`}>
+              <PokemonCard
+                id={filteredPokemonsList[0]?.id}
+                image={
+                  filteredPokemonsList[0]?.sprites?.other["official-artwork"]
+                    ?.front_default
+                }
+                name={filteredPokemonsList[0]?.name}
+                types={filteredPokemonsList[0]?.types}
+                loadingCardPokemon={isLoadingCard}
+              />
+            </Link>
           </Content>
         ) : (
           <Content>
-            {allPokemons
-              .sort((a, b) => (a.id > b.id ? 1 : -1))
-              .map((pokemonStats, index) => (
-                <Link key={index} to={`pokemon/${pokemonStats.name}`}>
-                  <PokemonCard
-                    key={index}
-                    id={pokemonStats.id}
-                    image={
-                      pokemonStats.sprites.other["official-artwork"]
-                        .front_default
-                    }
-                    name={pokemonStats.name}
-                    types={pokemonStats.types}
-                    type={pokemonStats.types[0].type.name}
-                  />
-                </Link>
-              ))}
+            {allPokemons.length > 0 &&
+              allPokemons
+                .sort((a, b) => (a.id > b.id ? 1 : -1))
+                .map((pokemonStats, index) => (
+                  <Link key={index} to={`pokemon/${pokemonStats.name}`}>
+                    <PokemonCard
+                      key={index}
+                      id={pokemonStats?.id}
+                      image={
+                        pokemonStats?.sprites?.other["official-artwork"]
+                          ?.front_default
+                      }
+                      name={pokemonStats?.name}
+                      types={pokemonStats?.types}
+                      type={pokemonStats?.types[0]?.type?.name}
+                    />
+                  </Link>
+                ))}
 
             {isLoading ? (
               <Loader />

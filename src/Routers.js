@@ -2,8 +2,8 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 // Componentes
-import PokemonList from "./components/PokemonList";
-import PokemonInfo from "./components/PokemonInfo";
+import PokemonList from "./pages/PokemonList";
+import PokemonInfo from "./pages/PokemonInfo";
 import NotFound from "./components/NotFound";
 
 export default function Routers() {

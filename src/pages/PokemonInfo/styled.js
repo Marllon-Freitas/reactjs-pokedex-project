@@ -205,6 +205,10 @@ export const Content = styled.div`
       transition: all ease-in-out 0.5s;
     }
 
+    .bloc-tabs h3 {
+      font-size: clamp(1rem, 1.5vw, 1.5rem);
+    }
+
     .active-tabs::before {
       content: "";
       display: block;

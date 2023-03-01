@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 // Estilos
-import { Wrapper, Content } from "./backToTopButton.style";
+import { Wrapper, Content } from "./styled";
 
 function BackToTopButton() {
   const [isVisible, setIsVisible] = useState(false);

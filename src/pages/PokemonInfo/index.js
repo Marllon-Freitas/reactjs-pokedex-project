@@ -3,10 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getPokemonService, getPokemonSpeciesService } from "../../services";
 
 // Estilos
-import { Wrapper, Content } from "./PokemonInfo.style";
+import { Wrapper, Content } from "./styled.js";
 
-import Loader from "../Loader";
-import Header from "../Header";
+import Loader from "../../components/Loader";
+import Header from "../../components/Header";
 
 import { formatId } from "../../utils/formatId";
 import { calculateCaptureRate } from "../../utils/formatCaptureRate";
@@ -64,10 +64,13 @@ function PokemonInfo() {
       })
       .catch((err) => {
         console.log(err);
-      })
-      .finally(() => {
+        alert("Pokemon not found");
+        navigate("/");
+        return;
+      }).finally(() => {
         setIsLoading(false);
       });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pokemonName]);
 
   const femaleRate = pokemonInfoSpecies.map((stats) => {
@@ -130,25 +133,25 @@ function PokemonInfo() {
                     className={toggleState === 1 ? "tabs active-tabs" : "tabs"}
                     onClick={() => toggleTab(1)}
                   >
-                    About
+                    <h3>About</h3>
                   </button>
                   <button
                     className={toggleState === 2 ? "tabs active-tabs" : "tabs"}
                     onClick={() => toggleTab(2)}
                   >
-                    Base Stats
+                    <h3>Base Stats</h3>
                   </button>
                   <button
                     className={toggleState === 3 ? "tabs active-tabs" : "tabs"}
                     onClick={() => toggleTab(3)}
                   >
-                    Info
+                    <h3>Info</h3>
                   </button>
                   <button
                     className={toggleState === 4 ? "tabs active-tabs" : "tabs"}
                     onClick={() => toggleTab(4)}
                   >
-                    Moves
+                    <h3>Moves</h3>
                   </button>
                 </div>
 
